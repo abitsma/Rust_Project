@@ -1,3 +1,4 @@
+use std::io;
 fn main() {
     println!("Hello, world!");
 
@@ -87,4 +88,28 @@ first();
 
 //https://www.w3schools.com/rust/rust_data_structures.php
 //resume here later
+
+//Last big thing is structures, which is a custom data type that you can turn into an object
+
+struct Human {
+  name: String,
+  age: u32,
+  can_vote: bool
+}
+
+let me = Human {
+  name: String::from("Austin"),
+  age: 22,
+  can_vote: true
+};
+
+println!("My name is {}", me.name);
+
+println!("Enter some text: ");
+let mut usertext = String::new();
+io::stdin()
+  .read_line(&mut usertext);
+
+  println!("You entered {}", usertext);
+  
 }

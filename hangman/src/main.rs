@@ -1,3 +1,99 @@
+use rand::seq::IndexedRandom;
+use std::io;
+use std::io::Write;
 fn main() {
-    println!("Hello, world!");
+
+    //all of this is getting the game set up to play
+
+    let mut rng = rand::rng();
+    let hang_list = vec!["Guitar", "Nerds", "Prophet", "String", "Rust", "Coding", "BYUI"];
+    let word = hang_list.choose(&mut rng).expect("hang_list is empty");
+    //println!("Word is: {}", word)
+
+    struct Letter {
+        letter: char,
+        guessed: bool,
+    }
+
+    struct FormedWord {
+        letters: Vec<Letter>,
+    }
+
+    let mut formed = FormedWord {
+        letters: word.chars().map(|c| Letter {
+            letter: c,
+            guessed: false,
+        }).collect(),
+    };
+
+    fn display(f: &FormedWord) {
+        for lett in &f.letters {
+            if lett.guessed == true {
+                print!("{} ", lett.letter);
+            }
+            else {
+                print!("_ ");
+            }
+        }
+    }
+
+    fn get_guess() -> char {
+        println!("");
+        print!("Enter a guess: ");
+        io::stdout().flush().unwrap();
+        let mut usertext = String::new();
+        io::stdin().read_line(&mut usertext).expect("Failed to read input");
+    return usertext.trim().chars().next().expect("No character entered").to_lowercase().next().unwrap();
+    }
+
+    fn check_word(f: &FormedWord) -> bool {
+        for lett in &f.letters {
+            if lett.guessed == false {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    let mut chances = 5;
+
+    let mut marker = true;
+
+    let mut over = false;
+
+    /* for ch in formed.letters {
+        println!("The letter is {}", ch.letter);
+    } */
+
+    //now to make the game
+
+    //display(&formed);
+
+    while over == false {
+        marker = true;
+        display(&formed);
+        let mut guess = get_guess();
+        println!("You entered {}", guess);
+
+        for lett in &mut formed.letters {
+            if guess == lett.letter.to_lowercase().next().unwrap() {
+                lett.guessed = true;
+                marker = false;
+            }
+        }
+
+        if marker == true {
+            chances -= 1;
+        }
+
+        if chances == 0 {
+            over = true;
+            println!("You lost :((\nThe correct word was: {}", word)
+        }
+
+        if check_word(&formed) == true {
+            over = true;
+            println!("You won!\nThe correct word was: {}", word)
+        }
+    }
 }
